@@ -65,13 +65,13 @@ func sendKafkaMessage(producer sarama.SyncProducer,
 		return fmt.Errorf("failed to marshal notification: %w", err)
 	}
 
-	msg := sarama.ProducerMessage{
+	msg := &sarama.ProducerMessage{
 		Topic: KafkaTopic,
 		Key:   sarama.StringEncoder(strconv.Itoa(toUser.ID)),
 		Value: sarama.StringEncoder(notificationJSON),
 	}
 
-	_, _, err = producer.SendMessage(&msg)
+	_, _, err = producer.SendMessage(msg)
 
 	return err
 }
@@ -113,6 +113,7 @@ func SetupProducer() (sarama.SyncProducer, error) {
 	config.Producer.Return.Successes = true
 	producer, err := sarama.NewSyncProducer([]string{KafkaServerAddress},
 		config)
+
 	if err != nil {
 		return nil, fmt.Errorf("failed to setup producer: %w", err)
 	}

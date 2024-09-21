@@ -16,15 +16,16 @@ func main() {
 		{ID: 3, Name: "Richard"},
 		{ID: 4, Name: "Leon"},
 	}
-
+	
 	producer, err := producers.SetupProducer()
-
+	
 	if err != nil {
-		log.Fatalf("Failed to initialize producer: %v", err)
+		log.Fatalf("Failed to initialize producer: Error Message [%v]", err)
 	}
 	defer producer.Close()
 
 	gin.SetMode(gin.ReleaseMode)
+
 	router := gin.Default()
 	router.POST("/send", producers.SendMessageHandler(producer, users))
 
